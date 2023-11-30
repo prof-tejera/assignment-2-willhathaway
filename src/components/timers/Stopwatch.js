@@ -3,7 +3,7 @@ import Timer from "../generic/Timer";
 import Button from "../generic/Button";
 import Input from "../generic/Input";
 
-const Stopwatch = ({ settings, onChangeSettings, isSettings }) => {
+const Stopwatch = ({ onChangeSettings, isSettings }) => {
   const [time, setTime] = useState(0);
   const [limit, setLimit] = useState(0);
 

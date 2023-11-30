@@ -3,16 +3,15 @@ import Button from "../generic/Button";
 import Timer from "../generic/Timer";
 import Input from "../generic/Input";
 
-const Countdown = ({ settings, onChangeSettings, isSettings }) => {
+const Countdown = ({  onChangeSettings, isSettings }) => {
   console.log("Props in Countdown:", typeof onChangeSettings);
 
   const [hours, setHours] = useState("00");
   const [minutes, setMinutes] = useState("00");
   const [seconds, setSeconds] = useState("00");
-  const [time, setTime] = useState(() => settings.time || 0);
+  const [time, setTime] = useState('0');
   const [isRunning, setIsRunning] = useState(false);
 
-  console.log(settings)
 
   console.log(time)
 

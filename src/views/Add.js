@@ -6,20 +6,19 @@ import Tabata from "../components/timers/Tabata";
 import XY from "../components/timers/XY";
 import Stopwatch from "../components/timers/Stopwatch";
 
-function Add({ queue, addToQueue }) {
+function Add({ addToQueue }) {
   const [selectedTimer, setSelectedTimer] = useState("");
   const [settings, setSettings] = useState({
     name: "name",
-    time: 0, // in milliseconds
+    time: 0, 
     status: "notRunning",
-    settings: {
-      time: 0,
-      limit: 0,
-      rounds: 0,
-      work: 0,
-      rest: 0
-  }
-    // ... other settings
+    time: 0,
+    limit: 0,
+    rounds: 0,
+    work: 0,
+    rest: 0,
+
+   
   });
 
   const handleDropdownChange = (event) => {
@@ -28,16 +27,14 @@ function Add({ queue, addToQueue }) {
 
   const handleAddClick = () => {
     let timerObj = {
-        name: settings.timerName,
-        status: "notRunning",
-        settings: {
-            time: settings.time,
-            limit: settings.limit ? settings.limit : null,
-            rounds: settings.rounds ? settings.rounds : null,
-            work: settings.work ? settings.work : null,
-            rest: settings.rest ? settings.rest : null
-        }
-    }
+      name: settings.timerName,
+      status: "notRunning",
+      time: settings.time,
+      limit: settings.limit ? settings.limit : null,
+      rounds: settings.rounds ? settings.rounds : null,
+      work: settings.work ? settings.work : null,
+      rest: settings.rest ? settings.rest : null,
+    };
     console.log(settings);
     addToQueue(timerObj);
   };
@@ -45,7 +42,7 @@ function Add({ queue, addToQueue }) {
   const handleChangeSettings = (newSettings) => {
     console.log(newSettings);
     setSettings((prevSettings) => ({ ...prevSettings, ...newSettings }));
-    console.log(settings)
+    console.log(settings);
   };
 
   const renderSelectedTimer = () => {
@@ -53,7 +50,6 @@ function Add({ queue, addToQueue }) {
       case "Stopwatch":
         return (
           <Stopwatch
-            settings={settings}
             onChangeSettings={handleChangeSettings}
             isSettings={true}
           />
@@ -61,29 +57,18 @@ function Add({ queue, addToQueue }) {
       case "Countdown":
         return (
           <Countdown
-            settings={settings}
             onChangeSettings={handleChangeSettings}
             isSettings={true}
           />
         );
       case "Tabata":
         return (
-          <Tabata
-            settings={settings}
-            onChangeSettings={handleChangeSettings}
-            isSettings={true}
-          />
+          <Tabata onChangeSettings={handleChangeSettings} isSettings={true} />
         );
       case "XY":
-        return (
-          <XY
-            settings={settings}
-            onChangeSettings={handleChangeSettings}
-            isSettings={true}
-          />
-        );
+        return <XY onChangeSettings={handleChangeSettings} isSettings={true} />;
       default:
-        return null; // Or some default message/component
+        return null; 
     }
   };
 

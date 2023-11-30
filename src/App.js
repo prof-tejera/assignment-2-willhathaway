@@ -10,7 +10,6 @@ import {
 // When as item is completed, the next item in the queue is set to running.
 // The queue will be passed the the Homepage, and each item will be rendered there with it's given status.
 
-// Sample components for each page
 import Queue from "./views/Queue";
 import Docs from "./views/Docs";
 import Add from "./views/Add";
@@ -22,9 +21,8 @@ function App() {
 
   let [queue, setQueue] = useState([]);
 
-  const addToQueue = (timer) => {
-    setQueue([...queue, timer]);
-    console.log(queue)
+  const addToQueue = (newTimer) => {
+    setQueue(prevQueue => [...prevQueue, { ...newTimer }]);
   };
 
 

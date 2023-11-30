@@ -3,7 +3,7 @@ import Button from "../generic/Button";
 import Timer from "../generic/Timer";
 import Input from "../generic/Input";
 
-const XY = ({ settings, onChangeSettings, isSettings }) => {
+const XY = ({  onChangeSettings, isSettings }) => {
   const [hours, setHours] = useState("00");
   const [minutes, setMinutes] = useState("00");
   const [seconds, setSeconds] = useState("00");
@@ -13,7 +13,6 @@ const XY = ({ settings, onChangeSettings, isSettings }) => {
   const [currentRound, setCurrentRound] = useState(1);
   const [isNumOfRoundsEnabled, setIsNumOfRoundsEnabled] = useState(false);
 
-  console.log(JSON.stringify(settings));
 
   useEffect(() => {
     setTime(parseTimeToMilliseconds());

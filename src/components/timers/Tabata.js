@@ -3,7 +3,7 @@ import Timer from "../generic/Timer";
 import Button from "../generic/Button";
 import Input from "../generic/Input";
 
-const Tabata = ({ settings, onChangeSettings, isSettings }) => {
+const Tabata = ({  onChangeSettings, isSettings }) => {
   const [workTime, setWorkTime] = useState("00");
   const [restTime, setRestTime] = useState("00");
   const [rounds, setRounds] = useState("00");
@@ -47,7 +47,6 @@ const Tabata = ({ settings, onChangeSettings, isSettings }) => {
   const toggleStartStop = () => {
     if (!isActive) {
       setIsActive(true);
-      // Set the conditions only when starting the timer
       if (currentRound === 1 && timeLeft === workTime * 1000) {
         setIsWorkPeriod(true);
       }
@@ -56,28 +55,6 @@ const Tabata = ({ settings, onChangeSettings, isSettings }) => {
     }
   };
 
-  // const handleChange = (type, value) => {
-  //   let updatedSettings = { ...settings, timerName: "tabata" };
-
-  //   switch (type) {
-  //     case "work":
-  //       setWorkTime(value);
-  //       updatedSettings = { ...updatedSettings, work: value };
-  //       break;
-  //     case "rest":
-  //       setRestTime(value);
-  //       updatedSettings = { ...updatedSettings, rest: value };
-  //       break;
-  //     case "rounds":
-  //       setRounds(value);
-  //       updatedSettings = { ...updatedSettings, rounds: value };
-  //       break;
-  //     default:
-  //       return null;
-  //   }
-
-  //   onChangeSettings(updatedSettings);
-  // };
 
   useEffect(() => {
     console.log("test");
