@@ -5,14 +5,14 @@ import XY from "../components/timers/XY";
 
 let timers = [
   {
-    name: "Countdown",
-    component: <Countdown />,
+    name: "Stopwatch",
+    component: <Stopwatch />,
     milliseconds: 0,
     status: "not running",
   },
   {
-    name: "Stopwatch",
-    component: <Stopwatch />,
+    name: "Countdown",
+    component: <Countdown />,
     milliseconds: 0,
     status: "not running",
   },

@@ -3,44 +3,46 @@ import Timer from "../generic/Timer";
 import Button from "../generic/Button";
 import Input from "../generic/Input";
 
-const Tabata = () => {
+const Tabata = ({ settings, onChangeSettings, isSettings }) => {
   const [workTime, setWorkTime] = useState("00");
   const [restTime, setRestTime] = useState("00");
-  const [rounds, setRounds] = useState("0");
+  const [rounds, setRounds] = useState("00");
   const [currentRound, setCurrentRound] = useState(1);
   const [isActive, setIsActive] = useState(false);
   const [timeLeft, setTimeLeft] = useState(workTime * 1000);
   const [isWorkPeriod, setIsWorkPeriod] = useState(true);
 
-  useEffect(() => {
-    let interval;
+  useEffect(
+    (settings) => {
+      let interval;
 
-    if (isActive && currentRound <= rounds) {
-      interval = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          if (prevTime > 0) {
-            return prevTime - 1000;
-          } else {
-            if (isWorkPeriod) {
-              setIsWorkPeriod(false);
-              return restTime * 1000;
+      if (isActive && currentRound <= rounds) {
+        interval = setInterval(() => {
+          setTimeLeft((prevTime) => {
+            if (prevTime > 0) {
+              return prevTime - 1000;
             } else {
-              setIsWorkPeriod(true);
-              if (currentRound < rounds) {
-                setCurrentRound((round) => round + 1);
+              if (isWorkPeriod) {
+                setIsWorkPeriod(false);
+                return restTime * 1000;
+              } else {
+                setIsWorkPeriod(true);
+                if (currentRound < rounds) {
+                  setCurrentRound((round) => round + 1);
+                }
+                return workTime * 1000;
               }
-              return workTime * 1000;
             }
-          }
-        });
-      }, 1000);
-    } else if (currentRound > rounds && isActive) {
-      setIsActive(false);
-    }
+          });
+        }, 1000);
+      } else if (currentRound > rounds && isActive) {
+        setIsActive(false);
+      }
 
-    return () => clearInterval(interval);
-  }, [isActive, currentRound, isWorkPeriod, workTime, restTime, rounds]);
-
+      return () => clearInterval(interval);
+    },
+    [isActive, currentRound, isWorkPeriod, workTime, restTime, rounds]
+  );
 
   const toggleStartStop = () => {
     if (!isActive) {
@@ -53,7 +55,39 @@ const Tabata = () => {
       setIsActive(false);
     }
   };
-  
+
+  // const handleChange = (type, value) => {
+  //   let updatedSettings = { ...settings, timerName: "tabata" };
+
+  //   switch (type) {
+  //     case "work":
+  //       setWorkTime(value);
+  //       updatedSettings = { ...updatedSettings, work: value };
+  //       break;
+  //     case "rest":
+  //       setRestTime(value);
+  //       updatedSettings = { ...updatedSettings, rest: value };
+  //       break;
+  //     case "rounds":
+  //       setRounds(value);
+  //       updatedSettings = { ...updatedSettings, rounds: value };
+  //       break;
+  //     default:
+  //       return null;
+  //   }
+
+  //   onChangeSettings(updatedSettings);
+  // };
+
+  useEffect(() => {
+    console.log("test");
+    onChangeSettings({
+      timerName: "tabata",
+      work: workTime,
+      rest: restTime,
+      rounds: rounds,
+    });
+  }, [workTime, restTime, rounds]);
 
   const handleReset = () => {
     setIsActive(false);
@@ -62,10 +96,10 @@ const Tabata = () => {
     setIsWorkPeriod(true);
   };
 
-
-
   return (
     <div>
+      <Timer time={timeLeft} />
+
       <label>
         <Input
           name="Work Time (s):"
@@ -94,14 +128,19 @@ const Tabata = () => {
       </label>
       <div />
 
-      <Timer time={timeLeft} />
       <div>
-        Round: {currentRound} / {rounds}
+        {!isSettings ? (
+          <div>
+            <div>
+              Round: {currentRound} / {rounds}
+            </div>
+            <div>{isWorkPeriod ? "Work" : "Rest"} Period</div>
+            {!isActive && <Button name="Start" method={toggleStartStop} />}
+            {isActive && <Button name="Stop" method={toggleStartStop} />}
+          </div>
+        ) : null}
+        <Button name="Reset" method={handleReset} />
       </div>
-      <div>{isWorkPeriod ? "Work" : "Rest"} Period</div>
-      {!isActive && <Button name="Start" method={toggleStartStop} />}
-      {isActive && <Button name="Stop" method={toggleStartStop} />}
-      <Button name="Reset" method={handleReset} />
     </div>
   );
 };

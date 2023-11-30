@@ -51,7 +51,7 @@ function App() {
         {/* A <Routes> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Routes>
-          <Route path="/" element={<Queue />} />
+          <Route path="/" element={<Queue queue={queue} />} />
           <Route path="/docs" element={<Docs />} />
           <Route path="/add" element={<Add queue={queue} addToQueue={addToQueue} />} />
           <Route path="/timers" element={<Timers />} />

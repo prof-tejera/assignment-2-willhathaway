@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-import Stopwatch from "../components/timers/Stopwatch";
 import Countdown from "../components/timers/Countdown";
 import XY from "../components/timers/XY";
 import Tabata from "../components/timers/Tabata";
 import Container from "../components/generic/Container";
+import Stopwatch from "../components/timers/Stopwatch";
 
 const Timers = styled.div`
   display: flex;
@@ -29,10 +29,10 @@ const TimerTitle = styled.div`
 
 const TimersView = () => {
   const timers = [
-    { title: "Stopwatch", C: <Stopwatch /> },
-    { title: "Countdown", C: <Countdown /> },
-    { title: "XY", C: <XY /> },
-    { title: "Tabata", C: <Tabata /> },
+    { title: "Stopwatch", C: <Stopwatch onChangeSettings={() => {return}} isSettings={false}/> },
+    { title: "Countdown", C: <Countdown onChangeSettings={() => {return}} isSettings={false}/> },
+    { title: "XY", C: <XY onChangeSettings={() => {return}} isSettings={false}/> },
+    { title: "Tabata", C: <Tabata onChangeSettings={() => {return}} isSettings={false}/> },
   ];
 
   return (

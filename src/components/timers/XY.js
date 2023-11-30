@@ -3,7 +3,7 @@ import Button from "../generic/Button";
 import Timer from "../generic/Timer";
 import Input from "../generic/Input";
 
-const XY = () => {
+const XY = ({ settings, onChangeSettings, isSettings }) => {
   const [hours, setHours] = useState("00");
   const [minutes, setMinutes] = useState("00");
   const [seconds, setSeconds] = useState("00");
@@ -13,9 +13,15 @@ const XY = () => {
   const [currentRound, setCurrentRound] = useState(1);
   const [isNumOfRoundsEnabled, setIsNumOfRoundsEnabled] = useState(false);
 
+  console.log(JSON.stringify(settings));
+
   useEffect(() => {
     setTime(parseTimeToMilliseconds());
   }, [hours, minutes, seconds]);
+
+  useEffect(() => {
+    onChangeSettings({ timerName: "xy", time: time, rounds: rounds });
+  }, [hours, minutes, seconds, rounds]);
 
   useEffect(() => {
     setIsNumOfRoundsEnabled(
@@ -79,6 +85,8 @@ const XY = () => {
 
   return (
     <div>
+      <Timer time={time} />
+
       <div>
         <Input
           name={"Hours"}
@@ -99,19 +107,28 @@ const XY = () => {
           name={"Number of Rounds"}
           value={rounds}
           onChange={(newValue) => setRounds(newValue)}
-          disabled={!isNumOfRoundsEnabled} 
+          disabled={!isNumOfRoundsEnabled}
         />
       </div>
-      <Timer time={time} />
-      <div>
-        <Button name={isRunning ? "Stop" : "Start"} method={toggleStartStop} />
+      {!isSettings ? (
+        <div>
+          <Timer time={time} />
+          <div>
+            <Button
+              name={isRunning ? "Stop" : "Start"}
+              method={toggleStartStop}
+            />
+            <Button name="Reset" method={handleReset} />
+          </div>
+          <div>
+            <p>
+              Round {currentRound} of {rounds}
+            </p>
+          </div>
+        </div>
+      ) : (
         <Button name="Reset" method={handleReset} />
-      </div>
-      <div>
-        <p>
-          Round {currentRound} of {rounds}
-        </p>
-      </div>
+      )}
     </div>
   );
 };

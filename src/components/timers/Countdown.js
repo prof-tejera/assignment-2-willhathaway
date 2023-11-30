@@ -3,12 +3,18 @@ import Button from "../generic/Button";
 import Timer from "../generic/Timer";
 import Input from "../generic/Input";
 
-const Countdown = () => {
+const Countdown = ({ settings, onChangeSettings, isSettings }) => {
+  console.log("Props in Countdown:", typeof onChangeSettings);
+
   const [hours, setHours] = useState("00");
   const [minutes, setMinutes] = useState("00");
   const [seconds, setSeconds] = useState("00");
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(() => settings.time || 0);
   const [isRunning, setIsRunning] = useState(false);
+
+  console.log(settings)
+
+  console.log(time)
 
   useEffect(() => {
     let interval;
@@ -16,16 +22,12 @@ const Countdown = () => {
       interval = setInterval(
         () => setTime((prevTime) => prevTime - 1000),
         1000
-      ); 
+      );
     } else if (time === 0) {
       setIsRunning(false);
     }
     return () => clearInterval(interval);
   }, [isRunning, time]);
-
-  const toggleStartStop = () => {
-    setIsRunning(!isRunning);
-  };
 
   const handleReset = () => {
     setHours("00");
@@ -51,19 +53,25 @@ const Countdown = () => {
     }
   };
 
-  useEffect(() => {
+  
+  const toggleStartStop = () => {
+    setIsRunning(!isRunning);
+  };
 
-    let timeStr = hours + ":" + minutes + ":" + seconds; 
+  useEffect(() => {
+    let timeStr = hours + ":" + minutes + ":" + seconds;
 
     let a = timeStr.split(":");
     let milliseconds =
       +a[0] * 60 * 60 * 1000 + +a[1] * 60 * 1000 + +a[2] * 1000;
-
+    onChangeSettings({ timerName: "countdown", time: milliseconds });
     setTime(milliseconds);
   }, [hours, minutes, seconds]);
 
   return (
     <div>
+      <Timer time={time} />
+
       <div>
         <Input
           name={"Hours"}
@@ -81,11 +89,11 @@ const Countdown = () => {
           onChange={(newValue) => handleChange("second", newValue)}
         />
       </div>
-      <Timer time={time} />
-      <div>
+      {!isSettings ? (
         <Button name={isRunning ? "Stop" : "Start"} method={toggleStartStop} />
-        <Button name="Reset" method={handleReset} />
-      </div>
+      ) : null}
+
+      <Button name="Reset" method={handleReset} />
     </div>
   );
 };

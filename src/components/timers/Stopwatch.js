@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Timer from "../generic/Timer";
 import Button from "../generic/Button";
+import Input from "../generic/Input";
 
-const Stopwatch = () => {
-  
+const Stopwatch = ({ settings, onChangeSettings, isSettings }) => {
   const [time, setTime] = useState(0);
+  const [limit, setLimit] = useState(0);
 
   const [isRunning, setIsRunning] = useState(false);
 
@@ -19,6 +20,11 @@ const Stopwatch = () => {
     return () => clearInterval(interval);
   }, [isRunning]);
 
+  const handleChange = (value) => {
+    onChangeSettings({timerName: "stopwatch", limit: value})
+    setLimit(value);
+  };
+
   const toggleStartStop = () => {
     setIsRunning(!isRunning);
   };
@@ -30,8 +36,16 @@ const Stopwatch = () => {
   return (
     <div>
       <Timer time={time} />
+      <Input
+        name={"Limit (seconds)"}
+        value={limit}
+        onChange={(newValue) => handleChange(newValue)}
+      />
       <div>
-        <Button name={isRunning ? "Stop" : "Start"} method={toggleStartStop} />
+      {!isSettings ? (
+
+        <Button name={isRunning ? "Stop" : "Start"} method={toggleStartStop} />):null}
+
         <Button name="Reset" method={reset} />
       </div>
     </div>
