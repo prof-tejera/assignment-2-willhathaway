@@ -1,6 +1,10 @@
 import React from "react";
 
 function formatTime(ms) {
+
+  if (isNaN(ms) || ms < 0) {
+    return "00:00:00";
+  }
   const totalSeconds = Math.floor(ms / 1000);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);

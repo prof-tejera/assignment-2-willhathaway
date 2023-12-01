@@ -4,7 +4,6 @@ const runCountdownTimer = (settings, setTime) => {
 
     let interval = setInterval(() => {
       setTime((prevTime) => {
-        console.log('hello')
         const newTime = prevTime - 1000;
         if (newTime > 0) {
           return newTime;

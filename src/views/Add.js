@@ -17,8 +17,6 @@ function Add({ addToQueue }) {
     rounds: 0,
     work: 0,
     rest: 0,
-
-   
   });
 
   const handleDropdownChange = (event) => {
