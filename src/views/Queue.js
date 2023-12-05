@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Timer from "../components/generic/Timer";
 import Button from "../components/generic/Button";
 import Countdown from "../components/timers/Countdown";
@@ -15,94 +15,101 @@ import runXYTimer from "../utils/timerFunctions/xy";
 export const Queue = ({ queue }) => {
   const [currentTimerIndex, setCurrentTimerIndex] = useState(0);
   const [time, setTime] = useState(0);
+  const timeRef = useRef(time);
+
   const [isRunning, setIsRunning] = useState(false);
 
   // for tabata:
   const [currentRound, setCurrentRound] = useState(1);
   const [isWorkPeriod, setIsWorkPeriod] = useState(true);
 
-  console.log(queue);
-
   useEffect(() => {
-    if (queue.length > 0 && currentTimerIndex < queue.length) {
-      initializeTimer(queue[currentTimerIndex]);
-    }
-  }, [queue, currentTimerIndex, isRunning]);
+    console.log(queue);
+    if (!isRunning) {
+      console.log("initializing timer");
+      initializeTimer(currentTimerIndex);}
+    
+  }, [currentTimerIndex]);
 
-  const initializeTimer = (timerSettings) => {
-    switch (timerSettings.name) {
-      case "countdown":
-        setTime(timerSettings.time);
-        break;
-      case "stopwatch":
-        setTime(0);
-        break;
-      case "tabata":
-        setTime(timerSettings.workTime);
-        break;
-      case "xy":
-        setTime(timerSettings.time);
-        break;
-      default:
-        setTime(0);
-    }
-  };
 
   useEffect(() => {
     let interval;
 
+    const currentTimer = queue[currentTimerIndex];
+    console.log("current timer: " + JSON.stringify(currentTimer));
+    console.log("Time before setting new time: ", time);
+
+
     if (isRunning && currentTimerIndex < queue.length) {
-      const currentTimer = queue[0];
-      console.log(currentTimer.name);
-      switch (currentTimer.name) {
-        case "countdown":
-          interval = runCountdownTimer(currentTimer, setTime);
-          break;
-        case "stopwatch":
-          interval = runStopwatchTimer(currentTimer, setTime);
-          break;
-        case "tabata":
-          interval = runTabataTimer(
-            currentTimer,
-            setTime,
-            setCurrentRound,
-            setIsWorkPeriod
-          );
-          break;
-        case "xy":
-          interval = runXYTimer(
-            currentTimer,
-            setTime,
-            currentRound,
-            setCurrentRound
-          );
-        default:
-          break;
-      }
-      const checkTimerCompletion = () => {
-        const isTimerCompleted = (currentTimer.name === "xy" || currentTimer.name === "tabata") 
-          ? time <= 0 && currentRound >= currentTimer.rounds
-          : time <= 0;
+      interval = setInterval(() => {
+        let newTime;
 
-        if (isTimerCompleted) {
-          clearInterval(interval);
-          handleTimerCompletion();
+        switch (currentTimer.name) {
+          case "countdown":
+            newTime = runCountdownTimer(currentTimer, time);
+            setTime(newTime);
+            if (newTime <= 0) {
+              handleTimerCompletion();
+            }
+            break;
+          case "stopwatch":
+            console.log("running stopwatch. time: " + time)
+            newTime = runStopwatchTimer(currentTimer, timeRef.current);
+            setTime(newTime);
+            timeRef.current = newTime;
+            if (newTime >= currentTimer.limit * 1000) {
+              console.log("handling timer completion")
+              handleTimerCompletion();
+            }
+            break;
+            break;
+          case "tabata":
+            break;
+          case "xy":
+            break;
+          default:
+            setTime(0);
+
+            break;
         }
-      };
-
-      interval = setInterval(checkTimerCompletion, 1000);
+      }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [isRunning, currentTimerIndex, time, currentRound]);
+  }, [isRunning, currentTimerIndex, queue, currentRound]);
 
   const handleTimerCompletion = () => {
-    if (currentTimerIndex < queue.length - 1) {
-      setCurrentTimerIndex(currentTimerIndex + 1);
-    } else {
-      // Last timer completed, handle accordingly
-      setIsRunning(false);
-      setCurrentTimerIndex(0);
+    console.log("Timer completion, time before reset: ", time);
+    const nextIndex =
+      currentTimerIndex < queue.length - 1 ? currentTimerIndex + 1 : 0;
+      console.log("current index: " + currentTimerIndex)
+
+    console.log("next index: " + nextIndex)
+    setCurrentTimerIndex(nextIndex);
+    initializeTimer(nextIndex);
+  };
+
+  const initializeTimer = (index) => {
+    console.log("initializing timer. time: " + time)
+    if (index < queue.length) {
+      const timerSettings = queue[index];
+
+      switch (timerSettings.name) {
+        case "countdown":
+          setTime(timerSettings.time);
+          break;
+        case "stopwatch":
+          setTime(0);
+          break;
+          case "tabata":
+            setTime(timerSettings.workTime);
+            break;
+          case "xy":
+            setTime(timerSettings.time);
+            break;
+        default:
+          setTime(0);
+      }
     }
   };
 
@@ -126,7 +133,12 @@ export const Queue = ({ queue }) => {
       {queue.map((timerSettings, index) => (
         <Container key={index}>
           <div>{timerSettings.name}</div>
-          <Timer time={timerSettings.time} />
+          {timerSettings.name === "stopwatch" && (
+            <div>Limit: {timerSettings.limit}</div>
+          )}
+          {timerSettings.name === "countdown" && (
+            <div>Time: {timerSettings.time}</div>
+          )}
           {timerSettings.name === "tabata" && (
             <div>
               <div>

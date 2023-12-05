@@ -32,14 +32,15 @@ function App() {
         <nav>
           <ul>
             <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/docs">Docs</Link>
+              <Link to="/">Queue</Link>
             </li>
             <li>
               <Link to="/add">Add</Link>
             </li>
+            <li>
+              <Link to="/docs">Docs</Link>
+            </li>
+
             <li>
               <Link to="/timers">Timers</Link>
             </li>

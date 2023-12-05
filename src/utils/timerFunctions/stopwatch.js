@@ -1,18 +1,17 @@
-const runStopwatchTimer = (settings, setTime) => {
-    
-    const limitInMilliseconds = settings.limit * 1000;
-    let interval = setInterval(() => {
-      setTime((prevTime) => {
-        
-        if (prevTime + 1000 >= limitInMilliseconds) {
-          clearInterval(interval); 
-          return limitInMilliseconds; 
-        } else {
-          return prevTime + 1000; 
-        }
-      });
-    }, 1000);
-    return interval;
+const runStopwatchTimer = (settings, currentTime) => {
+
+  console.log("Stopwatch func, incoming time: ", currentTime);
+
+  const limitInMilliseconds = settings.limit * 1000;
+  
+  if (currentTime + 1000 >= limitInMilliseconds) {
+    console.log("currentTime + 1000 > limit in ms")
+    return limitInMilliseconds;
+  } else {
+    console.log("Stopwatch func, returning: ", currentTime + 1000);
+
+    return currentTime + 1000;
+  }
 };
 
 export default runStopwatchTimer;

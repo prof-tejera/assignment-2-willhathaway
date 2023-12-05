@@ -9,7 +9,7 @@ const runXYTimer = (settings, setTime, currentRound, setCurrentRound) => {
       } else {
 
         if (currentRound < rounds) {
-          setCurrentRound((prevRound) => prevRound + 0.5);
+          setCurrentRound((prevRound) => prevRound + 1);
           return settings.time;
         } else {
           console.log("round equals rounds" + currentRound, rounds)
