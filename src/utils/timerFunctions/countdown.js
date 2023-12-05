@@ -1,20 +1,6 @@
-const runCountdownTimer = (settings, setTime) => {
-    const { time } = settings; 
-    console.log(time)
+const runCountdownTimer = (settings, currentTime) => {
+  const newTime = currentTime - 1000;
+  return newTime > 0 ? newTime : 0;
+};
 
-    let interval = setInterval(() => {
-      setTime((prevTime) => {
-        const newTime = prevTime - 1000;
-        if (newTime > 0) {
-          return newTime;
-        } else {
-          clearInterval(interval); 
-          return 0;
-        }
-      });
-    }, 1000);
-    return interval; 
-  };
-  
-  
-  export default runCountdownTimer
+export default runCountdownTimer;

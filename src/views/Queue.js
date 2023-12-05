@@ -23,14 +23,17 @@ export const Queue = ({ queue }) => {
   const [currentRound, setCurrentRound] = useState(1);
   const [isWorkPeriod, setIsWorkPeriod] = useState(true);
 
+  const highlightedTimerStyle = {
+    border: "4px solid red",
+  };
+
   useEffect(() => {
     console.log(queue);
     if (!isRunning) {
       console.log("initializing timer");
-      initializeTimer(currentTimerIndex);}
-    
+      initializeTimer(currentTimerIndex);
+    }
   }, [currentTimerIndex]);
-
 
   useEffect(() => {
     let interval;
@@ -39,33 +42,56 @@ export const Queue = ({ queue }) => {
     console.log("current timer: " + JSON.stringify(currentTimer));
     console.log("Time before setting new time: ", time);
 
-
     if (isRunning && currentTimerIndex < queue.length) {
       interval = setInterval(() => {
         let newTime;
 
         switch (currentTimer.name) {
           case "countdown":
-            newTime = runCountdownTimer(currentTimer, time);
+            newTime = runCountdownTimer(currentTimer, timeRef.current);
             setTime(newTime);
+            timeRef.current = newTime;
             if (newTime <= 0) {
               handleTimerCompletion();
             }
             break;
           case "stopwatch":
-            console.log("running stopwatch. time: " + time)
+            console.log("running stopwatch. time: " + time);
             newTime = runStopwatchTimer(currentTimer, timeRef.current);
             setTime(newTime);
             timeRef.current = newTime;
             if (newTime >= currentTimer.limit * 1000) {
-              console.log("handling timer completion")
+              console.log("handling timer completion");
               handleTimerCompletion();
             }
             break;
-            break;
           case "tabata":
+            newTime = runTabataTimer(
+              currentTimer,
+              timeRef.current,
+              currentRound,
+              isWorkPeriod,
+              setCurrentRound,
+              setIsWorkPeriod
+            );
+            setTime(newTime);
+            timeRef.current = newTime;
+            if (newTime === -1) {
+              handleTimerCompletion();
+            }
             break;
           case "xy":
+            newTime = runXYTimer(
+              currentTimer,
+              timeRef.current,
+              currentRound,
+              setCurrentRound
+            );
+            setTime(newTime);
+            timeRef.current = newTime;
+            if (newTime === -1) {
+              handleTimerCompletion();
+            }
             break;
           default:
             setTime(0);
@@ -82,15 +108,15 @@ export const Queue = ({ queue }) => {
     console.log("Timer completion, time before reset: ", time);
     const nextIndex =
       currentTimerIndex < queue.length - 1 ? currentTimerIndex + 1 : 0;
-      console.log("current index: " + currentTimerIndex)
+    console.log("current index: " + currentTimerIndex);
 
-    console.log("next index: " + nextIndex)
+    console.log("next index: " + nextIndex);
     setCurrentTimerIndex(nextIndex);
     initializeTimer(nextIndex);
   };
 
   const initializeTimer = (index) => {
-    console.log("initializing timer. time: " + time)
+    console.log("initializing timer. time: " + time);
     if (index < queue.length) {
       const timerSettings = queue[index];
 
@@ -101,12 +127,12 @@ export const Queue = ({ queue }) => {
         case "stopwatch":
           setTime(0);
           break;
-          case "tabata":
-            setTime(timerSettings.workTime);
-            break;
-          case "xy":
-            setTime(timerSettings.time);
-            break;
+        case "tabata":
+          setTime(timerSettings.workTime);
+          break;
+        case "xy":
+          setTime(timerSettings.time);
+          break;
         default:
           setTime(0);
       }
@@ -131,7 +157,10 @@ export const Queue = ({ queue }) => {
       <Button name="Skip" method={skip} />
       <Button name="Reset" method={reset} />
       {queue.map((timerSettings, index) => (
-        <Container key={index}>
+        <Container
+          key={index}
+          style={index === currentTimerIndex ? highlightedTimerStyle : {}}
+        >
           <div>{timerSettings.name}</div>
           {timerSettings.name === "stopwatch" && (
             <div>Limit: {timerSettings.limit}</div>
