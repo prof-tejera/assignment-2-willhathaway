@@ -5,6 +5,8 @@ import Countdown from "../components/timers/Countdown";
 import Tabata from "../components/timers/Tabata";
 import XY from "../components/timers/XY";
 import Stopwatch from "../components/timers/Stopwatch";
+import Dropdown from "../components/generic/Dropdown";
+import Button from "../components/generic/Button";
 
 function Add({ addToQueue }) {
   const [selectedTimer, setSelectedTimer] = useState("");
@@ -71,22 +73,17 @@ function Add({ addToQueue }) {
   };
 
   return (
-    <div>
-      <select onChange={handleDropdownChange} value={selectedTimer}>
-        <option disabled value="">
-          -- select an option --
-        </option>
-        {timers.map((timer, index) => (
-          <option key={index} value={timer.name}>
-            {timer.name}
-          </option>
-        ))}
-      </select>
+    <Container style={{width: "500px"}}>
+      <Dropdown
+        options={timers}
+        onChange={handleDropdownChange}
+        value={selectedTimer}
+      />
 
       <Container>{renderSelectedTimer()}</Container>
 
-      <button onClick={handleAddClick}>Confirm Addition</button>
-    </div>
+      <Button name="Confirm Addition" method={handleAddClick} /> 
+    </Container>
   );
 }
 
